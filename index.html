@@ -149,8 +149,8 @@
   }
   .shot {
     flex: 0 0 auto;
-    width: 130px;
-    height: 230px;
+    width: 170px;
+    height: 300px;
     background: var(--row);
     border: 1px solid var(--row-border);
     display: flex;
@@ -161,7 +161,10 @@
     font-size: 12px;
     letter-spacing: 0.02em;
     padding: 4px;
+    cursor: pointer;
+    transition: border-color 0.12s ease;
   }
+  .shot:hover, .shot:focus { border-color: var(--holo); outline: none; }
 
   /* ---------- Features list ---------- */
   .features { padding: 4px 16px 20px; }
@@ -202,6 +205,55 @@
   }
   footer a { color: var(--text-secondary); border-bottom: 1px dotted var(--text-secondary); }
   footer a:hover { color: var(--holo); border-color: var(--holo); }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid var(--row-border);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px 10px;
+  }
+  .lightbox-close:hover, .lightbox-close:focus { color: var(--holo); outline: none; }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 34px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 10px 14px;
+  }
+  .lightbox-nav:hover, .lightbox-nav:focus { color: var(--holo); outline: none; }
+  .lightbox-prev { left: 4px; }
+  .lightbox-next { right: 4px; }
+  @media (max-width: 520px) {
+    .lightbox-nav { font-size: 26px; padding: 8px; }
+  }
 </style>
 </head>
 <body>
@@ -229,11 +281,11 @@
     <div class="sep"></div>
 
     <div class="section-header">Screenshots</div>
-    <div class="shot-row">
-      <div class="shot"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-24-813_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-39-492_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-03-631_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-42-990_com.android.chrome-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+    <div class="shot-row" id="shotRow">
+      <div class="shot" tabindex="0" data-index="0"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-24-813_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="shot" tabindex="0" data-index="1"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-39-492_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="shot" tabindex="0" data-index="2"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-03-631_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="shot" tabindex="0" data-index="3"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-42-990_com.android.chrome-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
     </div>
 
     <div class="sep"></div>
@@ -277,6 +329,57 @@
 
 </div>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous screenshot">&#8249;</button>
+  <img id="lightboxImg" src="" alt="Screenshot, full size">
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next screenshot">&#8250;</button>
+</div>
+
+<script>
+  const shotEls = Array.from(document.querySelectorAll('.shot'));
+  const shotUrls = shotEls.map(el => el.querySelector('img').src);
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    lightboxImg.src = shotUrls[currentIndex];
+    lightbox.classList.add('open');
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+  }
+  function showDelta(delta) {
+    currentIndex = (currentIndex + delta + shotUrls.length) % shotUrls.length;
+    lightboxImg.src = shotUrls[currentIndex];
+  }
+
+  shotEls.forEach((el, i) => {
+    el.addEventListener('click', () => openLightbox(i));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
+    });
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev').addEventListener('click', (e) => { e.stopPropagation(); showDelta(-1); });
+  document.getElementById('lightboxNext').addEventListener('click', (e) => { e.stopPropagation(); showDelta(1); });
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showDelta(-1);
+    if (e.key === 'ArrowRight') showDelta(1);
+  });
+</script>
 
 </body>
 </html>
