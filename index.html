@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNW Revival</title>
+<meta name="description" content="A self-hosted backend that brings the discontinued Google News &amp; Weather Android app back to life.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f10;
+    --panel: #1a1b1d;
+    --row: #202124;
+    --row-hover: #27292c;
+    --sep: #303236;
+    --row-border: #2c2d30;
+    --text: #ececec;
+    --text-secondary: #8e8e8e;
+    --header-text: #a8a8a8;
+    --holo: #1785b5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: #000;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+  }
+
+  .device {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Action bar ---------- */
+  .actionbar {
+    height: 48px;
+    background: #1b1b1c;
+    border-bottom: 2px solid var(--holo);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    flex: 0 0 auto;
+  }
+  .actionbar svg { width: 24px; height: 24px; fill: none; stroke: rgba(255,255,255,0.78); stroke-width: 1.8; }
+  .actionbar span {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  /* ---------- Content panel ---------- */
+  .panel { background: var(--panel); flex: 1; }
+
+  .section-header {
+    color: var(--header-text);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 16px 16px 8px;
+  }
+
+  .sep { height: 1px; background: var(--sep); }
+
+  /* ---------- App identity block ---------- */
+  .app-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 16px 24px;
+  }
+  .app-block svg { width: 64px; height: 64px; margin-bottom: 14px; }
+  .app-block .app-icon-img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 14px;
+  }
+  .app-block .app-name {
+    display: inline-block;
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--text);
+  }
+  .app-block .app-name:hover, .app-block .app-name:focus { color: var(--holo); }
+  .app-block .app-version {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  .download-btn {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border: 1px solid var(--holo);
+    color: var(--holo);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: transparent;
+    transition: background 0.12s ease;
+  }
+  .download-btn svg { width: 18px; height: 18px; stroke: var(--holo); }
+  .download-btn:hover, .download-btn:focus {
+    background: rgba(23,133,181,0.1);
+    outline: none;
+  }
+
+  /* ---------- Generic list row ---------- */
+  .row {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--row-border);
+  }
+  .row:hover { background: var(--row-hover); }
+  .row svg { width: 24px; height: 24px; flex: 0 0 auto; fill: none; stroke: rgba(255,255,255,0.78); stroke-width: 1.8; }
+  .row-title { font-size: 18px; font-weight: 400; color: var(--text); flex: 1; }
+
+  /* ---------- Screenshots (placeholder thumbnails) ---------- */
+  .shot-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 8px 16px 24px;
+  }
+  .shot {
+    flex: 0 0 auto;
+    width: 130px;
+    height: 230px;
+    background: var(--row);
+    border: 1px solid var(--row-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #4a4b4d;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    padding: 4px;
+  }
+
+  /* ---------- Features list ---------- */
+  .features { padding: 4px 16px 20px; }
+  .features li {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    padding: 7px 0;
+  }
+  .features li::before {
+    content: "";
+    width: 4px; height: 4px;
+    margin-top: 9px;
+    background: var(--text-secondary);
+    flex: 0 0 auto;
+  }
+
+  /* ---------- Metadata rows ---------- */
+  .meta-row {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--row-border);
+  }
+  .meta-row .meta-label { font-size: 14px; color: var(--text-secondary); }
+  .meta-row .meta-value { font-size: 14px; color: var(--text); text-align: right; }
+
+  footer {
+    padding: 20px 16px 28px;
+    font-size: 12px;
+    color: #5a5a5a;
+    text-align: center;
+  }
+  footer a { color: var(--text-secondary); border-bottom: 1px dotted var(--text-secondary); }
+  footer a:hover { color: var(--holo); border-color: var(--holo); }
+</style>
+</head>
+<body>
+
+<div class="device">
+
+  <div class="actionbar">
+    <span>CubeFuns Web</span>
+  </div>
+
+  <div class="panel">
+
+    <div class="section-header">App</div>
+    <div class="app-block">
+      <img class="app-icon-img" src="https://downloadr2.apkmirror.com/wp-content/uploads/2025/10/12/68f0c6912ed1b_com.google.android.apps.genie.geniewidget.png" alt="Google News &amp; Weather icon">
+      <a class="app-name" href="https://news.google.com/?q=weather&amp;ie=UTF-8" target="_blank" rel="noopener">Google News &amp; Weather</a>
+      <div class="app-version">Server build r22 · 2026-06-27</div>
+
+      <a class="download-btn" href="https://github.com/YOUR-USERNAME/YOUR-REPO/releases/latest" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+        Download APK
+      </a>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="section-header">Screenshots</div>
+    <div class="shot-row">
+      <!-- Replace each with: <div class="shot"><img src="assets/screenshots/1.png" style="width:100%;height:100%;object-fit:cover"></div> -->
+      <div class="shot">Add 1.png</div>
+      <div class="shot">Add 2.png</div>
+      <div class="shot">Add 3.png</div>
+      <div class="shot">Add 4.png</div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="section-header">Features</div>
+    <ul class="features">
+      <li>Full news categories — Top Stories, Sports, Entertainment, Technology, Business</li>
+      <li>250 countries and regions, each matched to its language automatically like the original edition system</li>
+      <li>Live weather via Open-Meteo, with the app's original condition icon set</li>
+      <li>Reverse geocoding so location-based weather works without Google's APIs</li>
+      <li>Full article text extraction, not just headlines and snippets</li>
+      <li>Article thumbnails recovered via og:image scraping, with favicon fallback</li>
+      <li>Self-hosted — no dependency on Google's shut-down servers</li>
+    </ul>
+
+    <div class="sep"></div>
+
+    <div class="section-header">Details</div>
+    <div class="meta-row">
+      <span class="meta-label">Package name</span>
+      <span class="meta-value">com.google.android.apps.genie.geniewidget</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Server build</span>
+      <span class="meta-value">r22 · 2026-06-27</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Requires Android</span>
+      <span class="meta-value">Froyo (2.2.x) · API 8</span>
+    </div>
+    <div class="meta-row">
+      <span class="meta-label">Updated</span>
+      <span class="meta-value">2026-06-27</span>
+    </div>
+
+  </div>
+
+  <footer>
+    Not affiliated with or endorsed by Google.
+  </footer>
+
+</div>
+
+
+</body>
+</html>
