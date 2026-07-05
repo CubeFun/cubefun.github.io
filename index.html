@@ -9,64 +9,51 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f0f10;
-    --panel: #1a1b1d;
-    --row: #202124;
-    --row-hover: #27292c;
-    --sep: #303236;
-    --row-border: #2c2d30;
-    --text: #ececec;
-    --text-secondary: #8e8e8e;
-    --header-text: #a8a8a8;
-    --holo: #1785b5;
+  * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
 
   html, body { height: 100%; }
 
   body {
-    background: #000;
+    background: #000000;
     font-family: 'Roboto', sans-serif;
-    color: var(--text);
-    display: flex;
-    justify-content: center;
+    color: #ececec;
   }
 
   .device {
     width: 100%;
-    min-height: 100vh;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
+    min-height: 100%;
+    background: #0f0f10;
   }
 
   a { color: inherit; text-decoration: none; }
 
   /* ---------- Action bar ---------- */
+  /* Single line of text: vertical centering via line-height, no flexbox needed. */
   .actionbar {
     height: 48px;
+    line-height: 48px;
     background: #1b1b1c;
-    border-bottom: 2px solid var(--holo);
-    display: flex;
-    align-items: center;
+    border-bottom: 2px solid #1785b5;
     padding: 0 16px;
-    gap: 16px;
-    flex: 0 0 auto;
+    overflow: hidden;
   }
-  .actionbar svg { width: 24px; height: 24px; fill: none; stroke: rgba(255,255,255,0.78); stroke-width: 1.8; }
   .actionbar span {
     font-size: 18px;
     font-weight: 400;
-    color: var(--text);
+    color: #ececec;
   }
 
   /* ---------- Content panel ---------- */
-  .panel { background: var(--panel); flex: 1; }
+  .panel { background: #1a1b1d; }
 
   .section-header {
-    color: var(--header-text);
+    color: #a8a8a8;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -74,128 +61,110 @@
     padding: 16px 16px 8px;
   }
 
-  .sep { height: 1px; background: var(--sep); }
+  .sep { height: 1px; background: #303236; font-size: 0; line-height: 0; }
 
   /* ---------- App identity block ---------- */
+  /* Centered via text-align on the parent -- works for inline/inline-block
+     children (img, a) in every browser back to the beginning of CSS. */
   .app-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
-    padding: 12px 16px 24px;
+    padding: 20px 16px 24px;
   }
-  .app-block svg { width: 64px; height: 64px; margin-bottom: 14px; }
   .app-block .app-icon-img {
+    display: inline-block;
     width: 64px;
     height: 64px;
-    object-fit: contain;
     margin-bottom: 14px;
   }
   .app-block .app-name {
     display: inline-block;
     font-size: 26px;
     font-weight: 300;
-    color: var(--text);
+    color: #ececec;
   }
-  .app-block .app-name:hover, .app-block .app-name:focus { color: var(--holo); }
+  .app-block .app-name:hover, .app-block .app-name:focus { color: #1785b5; }
   .app-block .app-version {
     margin-top: 6px;
     font-size: 14px;
     font-weight: 400;
-    color: var(--text-secondary);
+    color: #8e8e8e;
   }
 
   .download-btn {
+    display: inline-block;
     margin-top: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
     padding: 11px 24px;
-    border: 1px solid var(--holo);
-    color: var(--holo);
+    border: 1px solid #1785b5;
+    color: #1785b5;
     font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     background: transparent;
+    text-align: center;
+    -webkit-transition: background 0.12s ease;
     transition: background 0.12s ease;
   }
-  .download-btn svg { width: 18px; height: 18px; stroke: var(--holo); }
+  .download-btn .arrow { margin-right: 8px; font-weight: 700; }
   .download-btn:hover, .download-btn:focus {
     background: rgba(23,133,181,0.1);
     outline: none;
   }
 
-  /* ---------- Generic list row ---------- */
-  .row {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 0 16px;
-    border-bottom: 1px solid var(--row-border);
-  }
-  .row:hover { background: var(--row-hover); }
-  .row svg { width: 24px; height: 24px; flex: 0 0 auto; fill: none; stroke: rgba(255,255,255,0.78); stroke-width: 1.8; }
-  .row-title { font-size: 18px; font-weight: 400; color: var(--text); flex: 1; }
-
-  /* ---------- Screenshots (placeholder thumbnails) ---------- */
+  /* ---------- Screenshots ---------- */
+  /* Centered wrapping gallery via text-align + inline-block, the pattern
+     every photo-gallery site used before flexbox existed. */
   .shot-row {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 8px 16px 24px;
+    text-align: center;
+    padding: 8px 8px 16px;
   }
   .shot {
-    flex: 0 0 auto;
+    display: inline-block;
+    vertical-align: top;
     width: 170px;
     height: 300px;
-    background: var(--row);
-    border: 1px solid var(--row-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 8px;
+    background: #202124;
+    border: 1px solid #2c2d30;
     text-align: center;
     color: #4a4b4d;
     font-size: 12px;
     letter-spacing: 0.02em;
     padding: 4px;
     cursor: pointer;
+    -webkit-transition: border-color 0.12s ease;
     transition: border-color 0.12s ease;
   }
-  .shot:hover, .shot:focus { border-color: var(--holo); outline: none; }
+  .shot:hover, .shot:focus { border-color: #1785b5; outline: none; }
+  .shot img { width: 100%; height: 100%; }
 
   /* ---------- Features list ---------- */
   .features { padding: 4px 16px 20px; }
   .features li {
     list-style: none;
-    display: flex;
-    gap: 10px;
     font-size: 15px;
     font-weight: 400;
-    color: var(--text);
+    color: #ececec;
     padding: 7px 0;
   }
-  .features li::before {
-    content: "";
-    width: 4px; height: 4px;
-    margin-top: 9px;
-    background: var(--text-secondary);
-    flex: 0 0 auto;
+  .features li .dot {
+    display: inline-block;
+    vertical-align: middle;
+    width: 4px;
+    height: 4px;
+    margin-right: 10px;
+    background: #8e8e8e;
   }
 
   /* ---------- Metadata rows ---------- */
+  /* Two-column label/value row via float, the pre-flexbox standard. */
   .meta-row {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    border-bottom: 1px solid var(--row-border);
+    padding: 14px 16px;
+    border-bottom: 1px solid #2c2d30;
   }
-  .meta-row .meta-label { font-size: 14px; color: var(--text-secondary); }
-  .meta-row .meta-value { font-size: 14px; color: var(--text); text-align: right; }
+  .meta-row:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+  .meta-label { float: left; font-size: 14px; color: #8e8e8e; }
+  .meta-value { float: right; font-size: 14px; color: #ececec; text-align: right; max-width: 60%; }
 
   footer {
     padding: 20px 16px 28px;
@@ -203,25 +172,31 @@
     color: #5a5a5a;
     text-align: center;
   }
-  footer a { color: var(--text-secondary); border-bottom: 1px dotted var(--text-secondary); }
-  footer a:hover { color: var(--holo); border-color: var(--holo); }
+  footer a { color: #8e8e8e; border-bottom: 1px dotted #8e8e8e; }
+  footer a:hover { color: #1785b5; border-color: #1785b5; }
 
   /* ---------- Lightbox ---------- */
+  /* Centering via display:table / table-cell -- works in every WebKit
+     release since 2008, including Android 2.x, unlike flexbox. */
   .lightbox {
     display: none;
     position: fixed;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     background: rgba(0,0,0,0.92);
     z-index: 200;
-    align-items: center;
-    justify-content: center;
+  }
+  .lightbox.open { display: table; width: 100%; height: 100%; }
+  .lightbox-cell {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
     padding: 40px 16px;
   }
-  .lightbox.open { display: flex; }
   .lightbox img {
     max-width: 100%;
-    max-height: 100%;
-    border: 1px solid var(--row-border);
+    max-height: 420px;   /* fallback for browsers without vh units */
+    max-height: 80vh;
+    border: 1px solid #2c2d30;
   }
   .lightbox-close {
     position: absolute;
@@ -229,30 +204,30 @@
     right: 16px;
     background: none;
     border: none;
-    color: var(--text-secondary);
+    color: #8e8e8e;
     font-size: 30px;
     line-height: 1;
     cursor: pointer;
     padding: 6px 10px;
   }
-  .lightbox-close:hover, .lightbox-close:focus { color: var(--holo); outline: none; }
+  .lightbox-close:hover, .lightbox-close:focus { color: #1785b5; outline: none; }
   .lightbox-nav {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
+    margin-top: -27px;  /* half of approx button height, replaces transform:translateY */
     background: none;
     border: none;
-    color: var(--text-secondary);
+    color: #8e8e8e;
     font-size: 34px;
     line-height: 1;
     cursor: pointer;
     padding: 10px 14px;
   }
-  .lightbox-nav:hover, .lightbox-nav:focus { color: var(--holo); outline: none; }
+  .lightbox-nav:hover, .lightbox-nav:focus { color: #1785b5; outline: none; }
   .lightbox-prev { left: 4px; }
   .lightbox-next { right: 4px; }
   @media (max-width: 520px) {
-    .lightbox-nav { font-size: 26px; padding: 8px; }
+    .lightbox-nav { font-size: 26px; padding: 8px; margin-top: -21px; }
   }
 </style>
 </head>
@@ -268,13 +243,12 @@
 
     <div class="section-header">App</div>
     <div class="app-block">
-      <img class="app-icon-img" src="https://downloadr2.apkmirror.com/wp-content/uploads/2025/10/12/68f0c6912ed1b_com.google.android.apps.genie.geniewidget.png" alt="Google News &amp; Weather icon">
+      <img class="app-icon-img" src="https://downloadr2.apkmirror.com/wp-content/uploads/2025/10/12/68f0c6912ed1b_com.google.android.apps.genie.geniewidget.png" alt="Google News &amp; Weather icon"><br>
       <a class="app-name" href="https://news.google.com/?q=weather&amp;ie=UTF-8" target="_blank" rel="noopener">Google News &amp; Weather</a>
       <div class="app-version">Server build r22 · 2026-06-27</div>
 
       <a class="download-btn" href="https://github.com/CubeFun/cubefun.github.io/raw/refs/heads/main/com.google.android.apps.genie.geniewidget_1.3.11-1311_minAPI8(nodpi)_apkmirror.com%20(1)-aligned-debugSigned.apk" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
-        Download APK
+        <span class="arrow">&#8595;</span>Download APK
       </a>
     </div>
 
@@ -282,23 +256,23 @@
 
     <div class="section-header">Screenshots</div>
     <div class="shot-row" id="shotRow">
-      <div class="shot" tabindex="0" data-index="0"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-24-813_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot" tabindex="0" data-index="1"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-39-492_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot" tabindex="0" data-index="2"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-03-631_com.google.android.apps.genie.geniewidget-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="shot" tabindex="0" data-index="3"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-42-990_com.android.chrome-edit.jpg" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="shot" tabindex="0" data-index="0"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-24-813_com.google.android.apps.genie.geniewidget-edit.jpg"></div>
+      <div class="shot" tabindex="0" data-index="1"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-29-39-492_com.google.android.apps.genie.geniewidget-edit.jpg"></div>
+      <div class="shot" tabindex="0" data-index="2"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-03-631_com.google.android.apps.genie.geniewidget-edit.jpg"></div>
+      <div class="shot" tabindex="0" data-index="3"><img src="https://raw.githubusercontent.com/CubeFun/cubefun.github.io/refs/heads/main/Screenshot_2026-07-01-23-30-42-990_com.android.chrome-edit.jpg"></div>
     </div>
 
     <div class="sep"></div>
 
     <div class="section-header">Features</div>
     <ul class="features">
-      <li>Full news categories — Top Stories, Sports, Entertainment, Technology, Business</li>
-      <li>250 countries and regions, each matched to its language automatically like the original edition system</li>
-      <li>Live weather via Open-Meteo, with the app's original condition icon set</li>
-      <li>Reverse geocoding so location-based weather works without Google's APIs</li>
-      <li>Full article text extraction, not just headlines and snippets</li>
-      <li>Article thumbnails recovered via og:image scraping, with favicon fallback</li>
-      <li>Self-hosted — no dependency on Google's shut-down servers</li>
+      <li><span class="dot"></span>Full news categories — Top Stories, Sports, Entertainment, Technology, Business</li>
+      <li><span class="dot"></span>250 countries and regions, each matched to its language automatically like the original edition system</li>
+      <li><span class="dot"></span>Live weather via Open-Meteo, with the app's original condition icon set</li>
+      <li><span class="dot"></span>Reverse geocoding so location-based weather works without Google's APIs</li>
+      <li><span class="dot"></span>Full article text extraction, not just headlines and snippets</li>
+      <li><span class="dot"></span>Article thumbnails recovered via og:image scraping, with favicon fallback</li>
+      <li><span class="dot"></span>Self-hosted — no dependency on Google's shut-down servers</li>
     </ul>
 
     <div class="sep"></div>
@@ -332,25 +306,47 @@
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
   <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous screenshot">&#8249;</button>
-  <img id="lightboxImg" src="" alt="Screenshot, full size">
+  <div class="lightbox-cell">
+    <img id="lightboxImg" src="" alt="Screenshot, full size">
+  </div>
   <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next screenshot">&#8250;</button>
 </div>
 
 <script>
-  const shotEls = Array.from(document.querySelectorAll('.shot'));
-  const shotUrls = shotEls.map(el => el.querySelector('img').src);
+  // Plain ES5 throughout -- Android 2.x's JS engine does not support
+  // const/let, arrow functions, template literals, classList, or
+  // Array.from. A single unsupported token here would throw a parse
+  // error and silently disable this entire script block.
 
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  let currentIndex = 0;
+  var shotEls = document.querySelectorAll('.shot');
+  var shotUrls = [];
+  var i;
+  for (i = 0; i < shotEls.length; i++) {
+    var imgEl = shotEls[i].getElementsByTagName('img')[0];
+    shotUrls.push(imgEl.src);
+  }
+
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  var currentIndex = 0;
+
+  function hasClass(el, cls) {
+    return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1;
+  }
+  function addClass(el, cls) {
+    if (!hasClass(el, cls)) { el.className = el.className + ' ' + cls; }
+  }
+  function removeClass(el, cls) {
+    el.className = (' ' + el.className + ' ').replace(' ' + cls + ' ', ' ');
+  }
 
   function openLightbox(index) {
     currentIndex = index;
     lightboxImg.src = shotUrls[currentIndex];
-    lightbox.classList.add('open');
+    addClass(lightbox, 'open');
   }
   function closeLightbox() {
-    lightbox.classList.remove('open');
+    removeClass(lightbox, 'open');
     lightboxImg.src = '';
   }
   function showDelta(delta) {
@@ -358,26 +354,36 @@
     lightboxImg.src = shotUrls[currentIndex];
   }
 
-  shotEls.forEach((el, i) => {
-    el.addEventListener('click', () => openLightbox(i));
-    el.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
+  function bindShot(idx) {
+    shotEls[idx].addEventListener('click', function () { openLightbox(idx); });
+    shotEls[idx].addEventListener('keydown', function (e) {
+      if (e.keyCode === 13 || e.keyCode === 32) {
+        e.preventDefault();
+        openLightbox(idx);
+      }
     });
-  });
+  }
+  for (i = 0; i < shotEls.length; i++) { bindShot(i); }
 
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
-  document.getElementById('lightboxPrev').addEventListener('click', (e) => { e.stopPropagation(); showDelta(-1); });
-  document.getElementById('lightboxNext').addEventListener('click', (e) => { e.stopPropagation(); showDelta(1); });
-
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
+  document.getElementById('lightboxPrev').addEventListener('click', function (e) {
+    e.stopPropagation();
+    showDelta(-1);
+  });
+  document.getElementById('lightboxNext').addEventListener('click', function (e) {
+    e.stopPropagation();
+    showDelta(1);
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') showDelta(-1);
-    if (e.key === 'ArrowRight') showDelta(1);
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) { closeLightbox(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!hasClass(lightbox, 'open')) { return; }
+    if (e.keyCode === 27) { closeLightbox(); }
+    if (e.keyCode === 37) { showDelta(-1); }
+    if (e.keyCode === 39) { showDelta(1); }
   });
 </script>
 
